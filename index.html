@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#11151c">
+<title>TileForge — Seamless Texture Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#10141b;--panel:#19202a;--panel2:#222b37;--border:#34404d;--text:#e4eaf2;--muted:#9ba8b9;--accent:#55c8b0;--glow:#55c8b022}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font:14px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header{height:68px;display:flex;align-items:center;padding:0 26px;gap:16px;border-bottom:1px solid var(--border);background:#141a22}
+.logo{width:38px;height:38px;border:2px solid var(--accent);border-radius:10px;display:grid;place-items:center;color:var(--accent);font-size:24px;font-weight:800;transform:rotate(-7deg)}
+h1{font-size:18px;line-height:1.15;margin:0;letter-spacing:-.04em}header p{color:var(--muted);font-size:11px;margin:2px 0 0;letter-spacing:.08em;text-transform:uppercase}
+.pill{margin-left:auto;padding:6px 10px;border:1px solid var(--border);border-radius:40px;color:var(--muted);font-size:11px}
+main{display:grid;grid-template-columns:322px minmax(0,1fr);min-height:calc(100vh - 68px)}
+aside{border-right:1px solid var(--border);background:#151b24;padding:22px 20px;overflow:auto}
+fieldset{margin:0 0 22px;padding:0;border:0}legend{font-size:11px;text-transform:uppercase;font-weight:800;letter-spacing:.13em;color:var(--muted);padding:0 0 11px}
+.row{display:flex;gap:8px;align-items:center}.row>*{min-width:0}label{display:block;color:#c7d1dc;margin:11px 0 5px;font-size:12px}.hint{color:var(--muted);font-size:11px;margin:6px 0 0;line-height:1.45}
+select,input[type=number]{width:100%;background:#0f151d;border:1px solid var(--border);border-radius:8px;padding:9px 10px;color:var(--text)}
+input[type=range]{width:100%;accent-color:var(--accent)}.range{display:flex;align-items:center;gap:9px}.range span{font-variant-numeric:tabular-nums;min-width:31px;text-align:right;font-size:12px;color:var(--muted)}
+.drop{padding:17px 12px;border:1px dashed #4b6870;background:#192d32;border-radius:12px;text-align:center;transition:.2s}
+.drop.over{border-color:var(--accent);background:#245047}.drop strong{display:block;font-size:14px;margin:4px 0}.drop small{color:var(--muted)}
+.btn{background:#27323f;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-weight:650}
+.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#091816}.btn.ghost{background:transparent}
+.btn.full{width:100%;margin-top:8px}.btn.small{font-size:11px;padding:6px 8px}
+input[type=file]{display:none}.checkrow{display:flex;align-items:center;gap:9px;margin-top:11px;color:var(--muted);font-size:12px}.checkrow input{accent-color:var(--accent)}
+.workspace{min-width:0;padding:23px;display:flex;flex-direction:column;gap:14px}
+.toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.group{display:flex;gap:6px;align-items:center}.seg{padding:7px 11px;border:1px solid var(--border);background:var(--panel);color:var(--muted);border-radius:6px}
+.seg.active{background:#245047;border-color:var(--accent);color:#dafff5}
+.canvases{display:grid;grid-template-columns:1fr 1fr;gap:15px;min-height:410px;flex:1}
+.viewer{border:1px solid var(--border);border-radius:13px;overflow:hidden;background:var(--panel);display:flex;flex-direction:column;min-width:0}
+.viewerhead{padding:12px 15px;display:flex;justify-content:space-between;font-size:12px;border-bottom:1px solid var(--border);align-items:center}
+.viewerhead em{font-size:11px;color:var(--muted);font-style:normal}
+.stage{position:relative;display:grid;place-items:center;min-height:360px;flex:1;background-color:#12171f;background-image:linear-gradient(45deg,#1d242e 25%,transparent 25%),linear-gradient(-45deg,#1d242e 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1d242e 75%),linear-gradient(-45deg,transparent 75%,#1d242e 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;overflow:hidden}
+.stage canvas{max-width:100%;max-height:65vh;object-fit:contain;image-rendering:auto;border:1px solid #ffffff15;box-shadow:0 8px 25px #0005}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid #fff1}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px}.stat strong{font-variant-numeric:tabular-nums;display:block;font-size:17px}.stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.banner{border:1px solid var(--border);border-radius:9px;padding:11px 14px;background:var(--panel);color:var(--muted);font-size:12px}
+#barwrap{display:none;margin-top:12px;height:6px;background:#0c1219;border-radius:5px;overflow:hidden}#bar{width:0;height:100%;background:var(--accent);transition:width .15s}
+footer{font-size:11px;color:#718094;text-align:right;padding:0 24px 17px}
+@media(max-width:1000px){main{grid-template-columns:285px minmax(0,1fr)}.canvases{grid-template-columns:1fr;min-height:0}.stage{min-height:270px}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:660px){header{padding:12px 16px;height:auto}main{display:flex;flex-direction:column}aside{border-right:0;border-bottom:1px solid var(--border)}.workspace{padding:14px}.stage{min-height:260px}header p{font-size:9px}.pill{display:none}}
+</style>
+</head>
+<body>
+<header><div class="logo">▦</div><div><h1>TileForge Studio</h1><p>Seamless material reconstruction</p></div><span class="pill">Local processing · No uploads</span></header>
+<main><aside>
+<fieldset><legend>01 / Source image</legend>
+<div id="drop" class="drop"><strong>Drop or paste a texture</strong><small>PNG · JPG · WebP</small><br><button class="btn full" id="browse">Choose image</button><input type="file" id="file" accept="image/png,image/jpeg,image/webp"></div>
+<label>Or start with an example</label>
+<div class="row"><button class="btn small" data-demo="stone">Stone</button><button class="btn small" data-demo="wood">Wood grain</button><button class="btn small" data-demo="brick">Bricks</button></div>
+<p class="hint" id="filename">Demo source · generated locally</p>
+</fieldset>
+<fieldset><legend>02 / Algorithm</legend>
+<select id="algorithm">
+<option value="auto">Auto · texture analysis</option>
+<option value="periodic">Periodic · smooth decomposition</option>
+<option value="quilting">Patch quilting · minimum seams</option>
+<option value="patchmatch">PatchMatch · seam reconstruction</option>
+<option value="hybrid">Hybrid · structure-aware quilting</option>
+</select>
+<p class="hint" id="description"></p>
+<label>Processing quality</label><select id="quality"><option value="fast">Fast · up to 512 px</option><option value="standard" selected>Standard · up to 1024 px</option><option value="high">High · up to 2048 px</option></select>
+</fieldset>
+<fieldset><legend>03 / Refinement</legend>
+<label>Patch size <span id="patchLabel"></span></label><div class="range"><input id="patch" type="range" min="16" max="192" step="8" value="64"><span id="patchValue">64</span></div>
+<label>Patch overlap</label><div class="range"><input id="overlap" type="range" min="10" max="50" step="5" value="25"><span id="overlapValue">25%</span></div>
+<label>Structure preservation</label><div class="range"><input id="structure" type="range" min="0" max="100" step="5" value="65"><span id="structureValue">65%</span></div>
+<label>Iterations</label><div class="range"><input id="iterations" type="range" min="1" max="6" value="3"><span id="iterationsValue">3</span></div>
+<label>Seed</label><input id="seed" type="number" value="4261" min="0" step="1">
+<label class="checkrow"><input id="colorfix" type="checkbox" checked> Correct low-frequency color drift</label>
+<label class="checkrow"><input id="edgefix" type="checkbox" checked> Enforce periodic edge continuity</label>
+<p class="hint">Patch controls apply to quilting, PatchMatch and Hybrid. Periodic decomposition uses spectral correction instead.</p>
+<button class="btn primary full" id="process">Generate tileable texture</button>
+<div class="row"><button class="btn full" id="cancel" disabled>Cancel</button><button class="btn full" id="download" disabled>Download PNG</button></div>
+<div id="barwrap"><div id="bar"></div></div><p class="hint" id="progress" role="status">Ready</p>
+</fieldset>
+</aside>
+<section class="workspace">
+<div class="toolbar">
+<div class="group"><span style="font-size:11px;color:var(--muted);margin-right:5px">REPEAT</span><button class="seg" data-tiles="1">1×1</button><button class="seg active" data-tiles="3">3×3</button><button class="seg" data-tiles="5">5×5</button></div>
+<div class="group"><button id="diagnostic" class="seg">Seam diagnostic</button><button id="compare" class="seg">Original / result</button></div>
+</div>
+<div class="canvases">
+<div class="viewer"><div class="viewerhead"><strong>01 · Source</strong><em id="srcdim">—</em></div><div class="stage"><canvas id="sourceCanvas"></canvas></div></div>
+<div class="viewer"><div class="viewerhead"><strong>02 · Seamless result</strong><em id="outdim">Not generated</em></div><div class="stage"><canvas id="resultCanvas"></canvas></div></div>
+</div>
+<div class="stats">
+<div class="stat"><strong id="leftStat">—</strong><small>Left / right RGB seam</small></div>
+<div class="stat"><strong id="topStat">—</strong><small>Top / bottom RGB seam</small></div>
+<div class="stat"><strong id="runtime">—</strong><small>Processing time</small></div>
+<div class="stat"><strong id="modeStat">—</strong><small>Method used</small></div>
+</div>
+<div class="banner" id="message">Texture output is measured by comparing opposite-edge RGB samples. A low seam difference is necessary, but not sufficient, for convincing structural continuity. Inspect the repeated 3×3 preview.</div>
+</section></main><footer>Runs entirely in your browser · deterministic seed · downloadable real pixels</footer>
+<script src="./app.js" defer></script>
+</body></html>
