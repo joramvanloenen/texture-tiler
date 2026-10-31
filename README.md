@@ -4,7 +4,7 @@ A browser-based seamless texture tiler. **All image processing runs locally**; u
 
 ## Open
 
-Open \`index.html\` through a local HTTP server (workers are generally blocked on \`file://\`). Either run \`npm run dev\` and visit http://localhost:5173, or serve the directory with any static host (including GitHub Pages).
+Open `index.html` through a local HTTP server (workers are generally blocked on `file://`). Either run `npm run dev` and visit http://localhost:5173, or serve the directory with any static host (including GitHub Pages).
 
 The original Replit preview, built earlier, is: https://mountainous-joint-leads--joramvan2.replit.app
 
@@ -38,17 +38,14 @@ The original Replit preview, built earlier, is: https://mountainous-joint-leads-
 
 Requires Node.js 20+ for the optional dev server and automated tests (the app itself requires no package dependencies).
 
-\`\`\`bash
+```bash
 npm run dev
 npm test
-\`\`\`
+```
 
-Files: \`index.html\` (UI), \`app.js\` (browser interactions), \`tiler-worker.js\` (processing), \`server.mjs\` (local static hosting), \`tests/worker.test.mjs\` (algorithm regression checks).
+Files: `index.html` (UI), `app.js` (browser interactions), `tiler-worker.js` (processing), `server.mjs` (local static hosting), `tests/worker.test.mjs` (algorithm regression checks).
 
 ## Test conditions
 
 The automated tests validate: dimensions, exact opposite-edge continuity, transparency retention, deterministic seeded results, and behavior of every selectable processing mode. Visual quality must still be evaluated with a repeated preview on representative materials.
 
-## License
-
-MIT.
