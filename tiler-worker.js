@@ -266,10 +266,21 @@ function patchMatch(src,w,h,o,rng,structured){
   }
   progress(Math.min(88,(it+1)/rounds*87),"Searching corresponding patches · "+(it+1)+"/"+rounds);
  }
+ // Fill the interior of large missing bands by propagating valid patch offsets.
+ // Without this step, fully masked regions have zero known pixels to score against.
+ const trusted=nodes.filter(n=>n.cost<1e7);
+ if(!trusted.length)return quilt(src,w,h,o,rng,structured);
+ for(const n of nodes)if(n.cost>=1e7){
+  let nearest=trusted[0],best=Infinity;
+  for(const t of trusted){const d=(n.x-t.x)**2+(n.y-t.y)**2;if(d<best){best=d;nearest=t}}
+  n.sx=((nearest.sx+n.x-nearest.x)%w+w)%w;
+  n.sy=((nearest.sy+n.y-nearest.y)%h+h)%h;
+  n.cost=nearest.cost;
+ }
  const accum=new Float32Array(w*h*4),weights=new Float32Array(w*h);
  for(const n of nodes){
   if(n.cost>=1e7)continue;
-  const rr=Math.floor(patch*.76);
+  const rr=Math.floor(patch*.96);
   for(let dy=-rr;dy<=rr;dy++)for(let dx=-rr;dx<=rr;dx++){
    const x=n.x+dx,y=n.y+dy;
    if(x<0||x>=w||y<0||y>=h||!mask[y*w+x])continue;
